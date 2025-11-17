@@ -11,7 +11,7 @@ Here is the core philosophy behind the project:
 
 >**Technology will always grow — faster than we expect, faster than we can control. But our responsibility grows with it. If we care enough to build systems that think about child safety, fairness, and balance at every step, then innovation and protection can move forward together. Tech doesn’t have to leave humanity behind — we can choose to build tools that hold both progress and ethics in the same hand.**
 
-<img width="700" height="600" alt="ChatGPT Image Jun 27, 2116, 03_56_49 PM" src="https://github.com/user-attachments/assets/f12eac5d-c02f-4537-8bba-2d8579575c5c" />
+<img width="1024" height="1000" alt="ChatGPT Image Jun 27, 2116, 03_56_49 PM" src="https://github.com/user-attachments/assets/f12eac5d-c02f-4537-8bba-2d8579575c5c" />
 
 
 
@@ -56,6 +56,17 @@ It’s an argument for a new cultural approach to tech:
   **innovation and responsibility growing side by side.**
 
 ## Architecture
+
+Agent Architecture: **Sequential Pipeline**
+
+The system employs a SequentialAgent pipeline, which is deterministic, reliable, and mimics a specialized human analysis team. The output of one agent becomes the context (artifact) for the next, ensuring every stage is focused and efficient.
+
+|S.No.|Agent Name|Role|Core Function|
+|-----|----------|----|-------------|
+|1.|Preprocessor Agent|Cleans text, tags context, detects language.|Normalizes noisy input and extracts metadata for the downstream classifier.|
+|2.|Risk Classifier Agent|Determines primary risk category and confidence.|Uses Gemini to classify the message into one of six specific risk types.|
+|3.|Risk Scorer Agent|Calculates final risk level using a custom tool.|Converts the LLM's subjective confidence score into an objective, policy-based LOW/MEDIUM/HIGH rating.|
+|4.|Summary Agent|Generates the final, empathetic guardian report.|Formats the risk data into a three-part, supportive report for the parent/guardian.|
 
 Below is the high-level structure of the agent.
 
@@ -119,31 +130,23 @@ Below is the high-level structure of the agent.
 
 ## Key concepts demonstrated while building agent
 
-This project includes more than three required course concepts:
+**Technical Implementation**
+The solution demonstrates expertise gained throughout the course by applying the following key concepts:
 
-1. Multi-agent system
-   - Preprocessor agent
-   - LLM-based risk classifier
-   - Safety scoring agent
-   - Action guidance agent
-   - Optional memory agent
-2. Tooling
-   - Code execution tools
-   - Custom classification tools
-3. Long-running operations
-   - Pause/resume analysis
-   - Stream-based message processing
-4. Sessions & Memory
-   - Per-child session
-   - Multi-turn context
-   - Cumulative risk summaries
-5. Observability
-   - Logging
-   - Decision trace
-   - Agent metrics
-6. Deployment-ready architecture (Optional)
-   - Can run as a Kaggle Notebook or API service
-   - Includes modular functions
+**1. Multi-agent system (Sequential Agents)**
+**Implementation:** The agent is built using the `SequentialAgent` class from the ADK, orchestrating four specialized LLMAgent classes (`PreprocessorAgent`, `RiskClassifierAgent`, `RiskScorerAgent`, `SummaryAgent`).
+
+**Value:** This modularity ensures high interpretability and debuggability. If the classification is wrong, we know exactly which agent (`RiskClassifierAgent`) needs instruction refinement, rather than debugging a single, monolithic prompt.
+
+**2. Custom Tools**
+**Implementation:** The `RiskScorerAgent` is provided with the `calculate_risk_level` function tool. This tool takes the LLM's output (confidence_score: float) and applies a hard-coded business logic to return a policy-driven value (LOW, MEDIUM, or HIGH).
+
+**Value:** This standardizes the final risk rating, removing the subjectivity of the raw LLM output and ensuring the system's response aligns with pre-defined safety policies.
+
+**3. Sessions & Memory**
+**Implementation:** The `InMemorySessionService` is used with a unique child_id (e.g., "tiny_human_742") as the session key.
+
+**Value:** This is critical for maintaining cumulative risk context. It allows the agent to track individual low-risk messages over a period of time. In a production environment (using Vertex AI Memory Bank), this feature would enable the agent to alert the parent if a series of low-toxicity messages from the same user accumulates into a higher, concerning pattern.
 
 ### Ethical Considerations
 
