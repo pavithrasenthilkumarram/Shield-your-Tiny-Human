@@ -1,0 +1,10 @@
+# Here we're using AgentTool to wrap the sub-agents to make them callable tools for the root agent.
+# Example 1 - risk category ---> grooming
+
+runner = InMemoryRunner(agent=root_agent)
+
+response = await runner.run_debug(
+    "hey, add me on private chat. send me a pic. we can be alone. also you're stupid if you don't reply. gg"
+)
+
+print(response)
