@@ -6,7 +6,7 @@ risk_scorer_agent = Agent(
         model=MODEL_NAME,
         retry_options=retry_config
     ),
-    # The instruction is modified to request a bulleted list for a clear output format.
+    
     instruction="""Use the risk_classified_data: {risk_classified_data}
 Use the tool `calculate_risk_level` to convert the classifier’s "
             "confidence_score into LOW, MEDIUM, or HIGH.\n\n"
