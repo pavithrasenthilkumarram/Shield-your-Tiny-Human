@@ -1,0 +1,19 @@
+# ------------------- Risk Classifier Agent: Identifies the type of online safety risk present in the message. -------------------
+
+risk_classifier_agent = Agent(
+    name="RiskClassifierAgent",
+    model=Gemini(
+        model=MODEL_NAME,
+        retry_options=retry_config
+    ),
+    # The instruction is modified to request a bulleted list for a clear output format.
+    instruction="""Analyze the preprocessed_data: {preprocessed_data}
+classify the content into one of:\n"
+            "grooming, bullying, coercion, hate_speech, explicit_content, no_risk.\n\n"
+            "Return ONLY JSON:\n"
+            "- risk_category\n"
+            "- confidence_score (0.0 to 1.0)\n\n""",
+    output_key="risk_classified_data",
+)
+
+print("✅ RiskClassfierAgent created.")
