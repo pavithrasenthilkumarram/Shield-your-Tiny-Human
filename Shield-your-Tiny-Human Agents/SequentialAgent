@@ -1,0 +1,8 @@
+# ------------------- Sequential Agent: Executes all agents in a fixed pipeline to produce the final consolidated output. -------------------
+
+root_agent = SequentialAgent(
+    name="shield_your_tiny_human_child_online_safety_guardian",
+    sub_agents=[preprocessor_agent, risk_classifier_agent, risk_scorer_agent, summary_agent],
+)
+
+print("✅ Sequential Agent created.")
