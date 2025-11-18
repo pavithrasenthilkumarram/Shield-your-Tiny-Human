@@ -6,7 +6,7 @@ risk_classifier_agent = Agent(
         model=MODEL_NAME,
         retry_options=retry_config
     ),
-    # The instruction is modified to request a bulleted list for a clear output format.
+    
     instruction="""Analyze the preprocessed_data: {preprocessed_data}
 classify the content into one of:\n"
             "grooming, bullying, coercion, hate_speech, explicit_content, no_risk.\n\n"
