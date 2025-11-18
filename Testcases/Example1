@@ -1,5 +1,5 @@
 # Here we're using AgentTool to wrap the sub-agents to make them callable tools for the root agent.
-# Example 1 - risk category ---> grooming
+# Example 1
 
 runner = InMemoryRunner(agent=root_agent)
 
