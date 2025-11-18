@@ -3,7 +3,7 @@
 A multi-agent AI system for the detection of online risks for children in chats, comments, and other social spaces with the intention of helping families stay safe by precaution-as technology is growing faster day by day.
 
 Technology today is sprinting at a pace that feels almost unreal. Every morning, something new drops — smarter AI, faster algorithms, hyper-personalized feeds, immersive digital worlds. Kids and teens are stepping into this rapidly evolving space long before most adults ever get a chance to understand it. And while this growth is exciting, it creates a very real imbalance: tech evolves daily, but safeguards don’t.
-**That gap is exactly where the “Child Online Safety Guardian” lives.**
+**That gap is exactly where the “Shield-your-Tiny-Human” lives.**
 
 This project explores how AI can act as a gentle but firm shield for kids and teens across digital platforms — chats, gaming lobbies, DMs, comment sections, and social spaces — detecting threats, inappropriate content, manipulation, grooming patterns, toxic language, cyberbullying, and hidden online risks.
 
@@ -48,7 +48,7 @@ This agent is designed to sit in the middle path:
 
 ### A future-focused alignment
 
-If we prioritize ethics and human values today, we can build a future where children grow confidently alongside technology — not underneath its risks.
+If we prioritize ethics and human values today, we can build a future where children can grow confidently alongside technology — not underneath its risks.
 
 This isn’t just an AI agent.
 
@@ -138,15 +138,20 @@ The solution demonstrates expertise gained throughout the course by applying the
 
 **Value:** This modularity ensures high interpretability and debuggability. If the classification is wrong, we know exactly which agent (`RiskClassifierAgent`) needs instruction refinement, rather than debugging a single, monolithic prompt.
 
-**2. Custom Tools**
+**2. Custom Tools for Policy Governance**
 **Implementation:** The `RiskScorerAgent` is provided with the `calculate_risk_level` function tool. This tool takes the LLM's output (confidence_score: float) and applies a hard-coded business logic to return a policy-driven value (LOW, MEDIUM, or HIGH).
 
-**Value:** This standardizes the final risk rating, removing the subjectivity of the raw LLM output and ensuring the system's response aligns with pre-defined safety policies.
+**Value:** This standardizes the final risk rating, removing the inherent subjectivity and potential variability of raw LLM output. It ensures the system's response aligns with pre-defined, non-negotiable safety policies, injecting auditability and governance into the generative process.
 
-**3. Sessions & Memory**
-**Implementation:** The `InMemorySessionService` is used with a unique child_id (e.g., "tiny_human_742") as the session key.
+**3. Internal State Management (Context Flow)**
+**Implementation:** The project utilizes the `output_key` parameter on each sub-agent (e.g., `output_key="preprocessed_data"`) to explicitly store structured data artifacts in the session state. The next agent's instruction then consumes this state via f-string referencing (e.g., `{preprocessed_data}`).
 
-**Value:** This is critical for maintaining cumulative risk context. It allows the agent to track individual low-risk messages over a period of time. In a production environment (using Vertex AI Memory Bank), this feature would enable the agent to alert the parent if a series of low-toxicity messages from the same user accumulates into a higher, concerning pattern.
+**Value:** This is critical for controlling the flow of context and data integrity. It guarantees that the Risk Classifier never receives raw, messy input, but only the cleaned, structured data produced by the Preprocessor, allowing each agent to operate on a consistent, verified state.
+
+**4. Production Robustness**
+**Implementation:** The underlying LLM model calls are configured with explicit types.HttpRetryOptions, specifying multiple retry attempts and specific HTTP status codes (429, 503, etc.) to retry on failure.
+
+**Value:** This showcases adherence to production best practices, ensuring the agent remains resilient and operational under transient API errors or high-traffic conditions, thereby maximizing service availability.
 
 ### Ethical Considerations
 
@@ -155,4 +160,10 @@ The solution demonstrates expertise gained throughout the course by applying the
 - Transparent risk scoring.
 - No harmful or misleading predictions.
 - Designed for guidance, not punishment.
+
+### Value Statement
+
+Shield-your-Tiny-Human is a dedicated multi-agent system that replaces poor and unreliable keyword-based safety tools and large monolithic LLM solutions with auditable and policy-based risk management system. 
+
+The real value of the project is that we provide confidence and clarity by producing auditable safety reports from tangled, uncertain online interactions. 
 
