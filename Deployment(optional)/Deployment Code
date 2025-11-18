@@ -1,0 +1,60 @@
+# Set up Cloud Credentials in Kaggle
+
+user_secrets = UserSecretsClient()
+user_credential = user_secrets.get_gcloud_credential()
+user_secrets.set_tensorflow_credential(user_credential)
+
+print("✅ Cloud credentials configured")
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Set your PROJECT_ID
+
+PROJECT_ID = "gen-lang-client-0857112229"  # TODO: Replace with your project ID
+os.environ["GOOGLE_CLOUD_PROJECT"] = PROJECT_ID
+
+if PROJECT_ID == "your-project-id" or not PROJECT_ID:
+    raise ValueError("⚠️ Please replace 'your-project-id' with your actual Google Cloud Project ID.")
+
+print(f"✅ Project ID set to: {PROJECT_ID}")
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Optional Deployment to Cloud Run
+
+# NOTE: This step is optional and requires the 'adk-deploy' module
+
+# ------------------- Deployment Configuration -------------------
+GCP_REGION = "us-central1" # A standard region for Google Cloud services
+SERVICE_NAME = "safety-guardian-workflow" 
+# PROJECT_ID is already defined
+
+# ------------------- Deployment Code -------------------
+try:
+    
+    from google.adk.deploy import cloud_run 
+
+    print(f"🚀 Attempting deployment of {root_agent.name} to Cloud Run in {GCP_REGION}...")
+
+    # The 'root_agent' object is packaged and deployed.
+    deployment = cloud_run.deploy(
+        root_agent,
+        project_id=PROJECT_ID,
+        region=GCP_REGION,
+        service_name=SERVICE_NAME,
+        # Recommended practice: enable tracing for production debugging
+        enable_tracing=True, 
+    )
+
+    print("\n✅ Deployment Command Successful!")
+    print(f"Service URL (Target): {deployment.service_url}")
+    print("\n**Next Steps:** Interact with your agent via this URL using the LlmAgentClient or HTTP requests.")
+
+except ModuleNotFoundError:
+    print("\n⚠️ DEPLOYMENT SKIPPED: 'google.adk.deploy' module not found.")
+    print("This confirms the environment does not support cloud deployment tools.")
+    print("The agent is correctly defined for local execution (Cells 11-13).")
+except Exception as e:
+    print("\n❌ DEPLOYMENT FAILED.")
+    print(f"Error details: {e}")
+    print("Check your GCP credentials, project ID, and ensure Cloud Run API is enabled.")
