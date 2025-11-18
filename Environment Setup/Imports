@@ -1,0 +1,40 @@
+# -------------------- Importing required libraries -------------------
+
+import os
+import time
+import json
+import logging
+from typing import Dict, Any
+from typing import Literal
+from google.genai import types
+
+# ADK imports
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
+from google.adk.sessions import InMemorySessionService
+from google.adk.models.google_llm import Gemini
+from google.adk.tools import AgentTool, FunctionTool, google_search
+from google.adk.agents import SequentialAgent
+from google.adk.runners import InMemoryRunner
+
+# -------------------- Kaggle secrets -------------------
+from kaggle_secrets import UserSecretsClient
+
+# ------------------- Logging -------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger("SafetyGuardian")
+
+# ------------------- Gemini API Key -------------------
+try:
+    API_KEY = UserSecretsClient().get_secret("GOOGLE_API_KEY")
+    os.environ["GOOGLE_API_KEY"] = API_KEY
+    print("🔑 Gemini API key loaded.")
+except:
+    print("❌ Add GOOGLE_API_KEY to Kaggle secrets!")
+    API_KEY = None
+
+MODEL_NAME = "gemini-2.5-flash"
+print(f"Using model: {MODEL_NAME}")
