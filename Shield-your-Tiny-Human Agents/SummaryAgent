@@ -1,0 +1,21 @@
+# ------------------- Summary Agent: Produces the final safety report combining all agent outputs. -------------------
+
+summary_agent = Agent(
+    name="SummaryAgent",
+    model=Gemini(
+        model=MODEL_NAME,
+        retry_options=retry_config
+    ),
+    
+    instruction="""Analyze the risk_scored_data: {risk_scored_data}
+You are the Summary Agent.\n\n"
+            "Create a clear, parent-friendly, non-fear-driven summary of the risk.\n"
+            "Include:\n"
+            "- A simple safety report\n"
+            "- Easy-to-follow reasoning\n"
+            "- Practical next steps\n\n"
+            "Return plain text only.\n\n""",
+    output_key="final_summary",
+)
+
+print("✅ SummaryAgent created.")
