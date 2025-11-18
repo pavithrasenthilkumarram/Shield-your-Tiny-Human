@@ -1,0 +1,27 @@
+# ------------------- Custom Tool Definition -------------------
+
+def calculate_risk_level(confidence_score: float) -> Literal["LOW", "MEDIUM", "HIGH"]:
+    """
+    Tool to convert a numerical confidence score (0.0 to 1.0) into a simple LOW, MEDIUM, or HIGH risk rating 
+    based on fixed policy thresholds.
+    
+    Args:
+        confidence_score: The LLM-determined confidence score of the risk, from 0.0 to 1.0.
+        
+    Returns:
+        The final risk rating: "LOW", "MEDIUM", or "HIGH".
+    """
+    # ------------------- Policy Logic: This is the non-LLM, deterministic part of the tool. -------------------
+    if confidence_score >= 0.8:
+        return "HIGH"
+    elif confidence_score >= 0.5:
+        return "MEDIUM"
+    else:
+        return "LOW"
+
+# ------------------- The FunctionTool definition: All metadata is inferred from the function's signature and docstring. -------------------
+RiskScoringTool = FunctionTool(
+    calculate_risk_level # Only pass the function object
+)
+
+print("✅ Custom Tool 'calculate_risk_level' defined.")
